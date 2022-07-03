@@ -1,0 +1,150 @@
+<html>
+    <head>
+        <title>
+            Candidate/Interviewer Register
+        </title>
+    </head>
+    <style>
+        .avalslotsbtncls{
+            text-decoration: none;
+            border: 2px solid black;
+            padding: 2px 3px;
+            background-color: grey;
+            color: black;
+            width: 6%;
+            text-align: center;
+            cursor: default;
+        }
+        
+    </style>
+    <body>
+        
+            <h3>Interviewer</h3>
+            <table border="1">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Available From</th>
+                    <th>Available To</th>
+                </tr>
+                {% for i in interviewer %}
+                <tr>
+                    <td>{{ i.id }}</td>
+                    <td>{{ i.name }}</td>
+                    <td>{{ i.avail_from }}</td>
+                    <td>{{ i.avail_to }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+
+
+
+            <H3>Candidates</H3>
+            <table border="1">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Available From</th>
+                    <th>Available To</th>
+                </tr>
+                {% for i in candidate %}
+                <tr>
+                    <td>{{ i.id }}</td>
+                    <td>{{ i.name }}</td>
+                    <td>{{ i.avail_from }}</td>
+                    <td>{{ i.avail_to }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            
+            <br>
+            <br>
+            <label>Select Interviewer ID</label>
+            <select id="interviewerselect">
+                <!-- <option selected>--select--</option> -->
+                {% for i in interviewer %}
+                    <option>{{ i.id }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <br>
+            <label>Select Candidate ID</label>
+            <select id="candidateselect">
+                <!-- <option selected>--select--</option> -->
+                {% for i in candidate %}
+                    <option>{{ i.id }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <br>
+
+        <form method="get"> 
+            <!-- {%csrf_token%} 
+            <p id="avalslotsbtn" class="avalslotsbtncls">Available Slots</p> -->
+            <button id="btnid">Available time Slots</button>
+        </form>
+        <h3>Available time slots</h3>
+        
+        <div id="mydiv">
+            <p id="btns"></p>
+        </div>
+        
+        
+    </body>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+        
+        $("#btnid").click(function (e) { 
+            e.preventDefault();
+        
+          var candidateid = $('#candidateselect').find(":selected").val();
+          var interviewerid =  $('#interviewerselect').find(":selected").val(); 
+          
+          
+        
+    
+          $.ajax({
+            type:'GET' ,                     
+            url: '/details/',                    
+            data: {
+              'candidateid': candidateid,
+              'interviewerid':interviewerid,
+              
+                   
+            },
+            success: function (response) {
+            try{
+                console.log(response);
+            $('#btns').empty();
+            
+                
+                
+            $.each( response, function( i, v){
+               
+                
+               for (let i = 0; i < v.length; i++) { 
+                
+	                
+
+                    $('#btns').append(`<button class="btn" style="margin-left:5px;">`+ v[i] +`</button>`)
+                }
+                
+               
+                
+            });
+            }
+            catch{
+                
+                $("#btns").append("No Available Slots");
+            }
+            
+            
+           
+          }
+        });
+        
+      
+    });
+    </script>
+</html>
